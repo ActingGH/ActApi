@@ -136,8 +136,7 @@ public class InterfaceInfoController {
     /**
      * 上线接口
      *
-     * @param interfaceInfoUpdateRequest
-     * @param request
+     * @param idRequest
      * @return
      */
     @PostMapping("/online")
@@ -169,8 +168,7 @@ public class InterfaceInfoController {
     /**
      * 下线接口
      *
-     * @param interfaceInfoUpdateRequest
-     * @param request
+     * @param idRequest
      * @return
      */
     @PostMapping("/offline")
@@ -203,8 +201,7 @@ public class InterfaceInfoController {
     /**
      * 下线接口
      *
-     * @param interfaceInfoUpdateRequest
-     * @param request
+     * @param invokeRequest
      * @return
      */
     @PostMapping("/invoke")
