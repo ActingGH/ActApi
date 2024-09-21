@@ -1,19 +1,20 @@
 package com.yupi.project.controller;
 
+import com.acting.actapiclientsdk.client.ActApiClient;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.google.gson.Gson;
 import com.yupi.project.annotation.AuthCheck;
-import com.yupi.project.common.BaseResponse;
-import com.yupi.project.common.DeleteRequest;
-import com.yupi.project.common.ErrorCode;
-import com.yupi.project.common.ResultUtils;
+import com.yupi.project.common.*;
 import com.yupi.project.constant.CommonConstant;
 import com.yupi.project.exception.BusinessException;
 import com.yupi.project.model.dto.interfaceInfo.InterfaceInfoAddRequest;
+import com.yupi.project.model.dto.interfaceInfo.InterfaceInfoInvokeRequest;
 import com.yupi.project.model.dto.interfaceInfo.InterfaceInfoQueryRequest;
 import com.yupi.project.model.dto.interfaceInfo.InterfaceInfoUpdateRequest;
 import com.yupi.project.model.entity.InterfaceInfo;
 import com.yupi.project.model.entity.User;
+import com.yupi.project.model.enums.InterfaceStatusEnum;
 import com.yupi.project.service.InterfaceInfoService;
 import com.yupi.project.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +27,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
- * 帖子接口
+ * 接口管理
  *
- * @author yupi
+ * @author acting
  */
 @RestController
 @RequestMapping("/interfaceInfo")
@@ -40,6 +41,9 @@ public class InterfaceInfoController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private ActApiClient actApiClient;
 
     // region 增删改查
 
@@ -105,7 +109,7 @@ public class InterfaceInfoController {
      */
     @PostMapping("/update")
     public BaseResponse<Boolean> updateInterfaceInfo(@RequestBody InterfaceInfoUpdateRequest interfaceInfoUpdateRequest,
-                                            HttpServletRequest request) {
+                                                     HttpServletRequest request) {
         if (interfaceInfoUpdateRequest == null || interfaceInfoUpdateRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -127,6 +131,113 @@ public class InterfaceInfoController {
         boolean result = interfaceInfoService.updateById(interfaceInfo);
         return ResultUtils.success(result);
     }
+
+
+    /**
+     * 上线接口
+     *
+     * @param interfaceInfoUpdateRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/online")
+    @AuthCheck(mustRole = "admin")
+    public BaseResponse<Boolean> uonlineInterfaceInfo(@RequestBody IdRequest idRequest,
+                                                      HttpServletRequest request) {
+        if (idRequest == null || idRequest.getId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        long id = idRequest.getId();
+        // 判断是否存在
+        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
+        if (oldInterfaceInfo == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        //判断接口是否可以调用 TODO 简单实现一下 后续更改
+        com.acting.actapiclientsdk.model.User user = new com.acting.actapiclientsdk.model.User();
+        user.setUsername("acting");
+        String res = actApiClient.getUserNameByPost(user);
+        if (StringUtils.isBlank(res)) {
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "接口验证失败");
+        }
+        oldInterfaceInfo.setStatus(InterfaceStatusEnum.ONLINE.getValue());
+        boolean result = interfaceInfoService.updateById(oldInterfaceInfo);
+
+        return ResultUtils.success(result);
+    }
+
+    /**
+     * 下线接口
+     *
+     * @param interfaceInfoUpdateRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/offline")
+    @AuthCheck(mustRole = "admin")
+    public BaseResponse<Boolean> offlineInterfaceInfo(@RequestBody IdRequest idRequest,
+                                                      HttpServletRequest request) {
+
+        if (idRequest == null || idRequest.getId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        long id = idRequest.getId();
+        // 判断是否存在
+        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
+        if (oldInterfaceInfo == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        //判断接口是否可以调用 TODO 简单实现一下 后续更改
+        com.acting.actapiclientsdk.model.User user = new com.acting.actapiclientsdk.model.User();
+        user.setUsername("acting");
+        String res = actApiClient.getUserNameByPost(user);
+        if (StringUtils.isBlank(res)) {
+            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "接口验证失败");
+        }
+        oldInterfaceInfo.setStatus(InterfaceStatusEnum.OFF.getValue());
+        boolean result = interfaceInfoService.updateById(oldInterfaceInfo);
+
+        return ResultUtils.success(result);
+    }
+
+    /**
+     * 下线接口
+     *
+     * @param interfaceInfoUpdateRequest
+     * @param request
+     * @return
+     */
+    @PostMapping("/invoke")
+    public BaseResponse<Object> invokeInterfaceInfo(@RequestBody InterfaceInfoInvokeRequest invokeRequest,
+                                                    HttpServletRequest request) {
+        //检验请求对象是否合法
+        if (invokeRequest == null || invokeRequest.getId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        //获取接口id
+        long id = invokeRequest.getId();
+        //获取用户参数列表
+        String userRequestParams = invokeRequest.getRequestParams();
+        //判断是否存在
+        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
+        if (oldInterfaceInfo == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        //检查接口是否为下线状态
+        if (oldInterfaceInfo.getStatus() == InterfaceStatusEnum.OFF.getValue()) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "接口已关闭");
+        }
+        User loginUser = userService.getLoginUser(request);
+        String ak = loginUser.getAccessKey();
+        String sk = loginUser.getSecretKey();
+        ActApiClient tempClient=new ActApiClient(ak,sk);
+        Gson gson = new Gson(); //第一次用到
+        com.acting.actapiclientsdk.model.User user = gson.fromJson(userRequestParams, com.acting.actapiclientsdk.model.User.class);
+        String usernameByPost = tempClient.getUserNameByPost(user);
+        return ResultUtils.success(usernameByPost);
+
+    }
+
 
     /**
      * 根据 id 获取
