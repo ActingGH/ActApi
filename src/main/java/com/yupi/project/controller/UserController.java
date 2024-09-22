@@ -1,5 +1,6 @@
 package com.yupi.project.controller;
 
+import com.acting.actapicommon.model.entity.User;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
@@ -8,9 +9,7 @@ import com.yupi.project.common.DeleteRequest;
 import com.yupi.project.common.ErrorCode;
 import com.yupi.project.common.ResultUtils;
 import com.yupi.project.exception.BusinessException;
-import com.yupi.project.model.dto.*;
 import com.yupi.project.model.dto.user.*;
-import com.yupi.project.model.entity.User;
 import com.yupi.project.model.vo.UserVO;
 import com.yupi.project.service.UserService;
 import org.apache.commons.lang3.StringUtils;

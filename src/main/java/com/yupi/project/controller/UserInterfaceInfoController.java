@@ -1,4 +1,6 @@
 package com.yupi.project.controller;
+import com.acting.actapicommon.model.entity.User;
+import com.acting.actapicommon.model.entity.UserInterfaceInfo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yupi.project.annotation.AuthCheck;
@@ -9,9 +11,6 @@ import com.yupi.project.exception.BusinessException;
 import com.yupi.project.model.dto.interfaceInfo.InterfaceInfoAddRequest;
 import com.yupi.project.model.dto.interfaceInfo.InterfaceInfoQueryRequest;
 import com.yupi.project.model.dto.interfaceInfo.InterfaceInfoUpdateRequest;
-import com.yupi.project.model.entity.UserInterfaceInfo;
-import com.yupi.project.model.entity.User;
-import com.yupi.project.service.InterfaceInfoService;
 import com.yupi.project.service.UserInterfaceInfoService;
 import com.yupi.project.service.UserService;
 import lombok.extern.slf4j.Slf4j;

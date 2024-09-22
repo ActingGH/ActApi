@@ -1,8 +1,8 @@
 package com.yupi.project.mapper;
 
 
+import com.acting.actapicommon.model.entity.UserInterfaceInfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.yupi.project.model.entity.UserInterfaceInfo;
 
 /**
 * @author 86186

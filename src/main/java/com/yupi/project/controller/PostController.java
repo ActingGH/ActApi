@@ -1,5 +1,6 @@
 package com.yupi.project.controller;
 
+import com.acting.actapicommon.model.entity.User;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yupi.project.annotation.AuthCheck;
@@ -10,12 +11,9 @@ import com.yupi.project.common.ResultUtils;
 import com.yupi.project.constant.CommonConstant;
 import com.yupi.project.exception.BusinessException;
 import com.yupi.project.model.dto.post.PostAddRequest;
-import com.yupi.project.model.dto.post.PostDoThumbRequest;
 import com.yupi.project.model.dto.post.PostQueryRequest;
 import com.yupi.project.model.dto.post.PostUpdateRequest;
 import com.yupi.project.model.entity.Post;
-import com.yupi.project.model.entity.User;
-import com.yupi.project.model.vo.PostVO;
 import com.yupi.project.service.PostService;
 import com.yupi.project.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,11 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.*;
-import java.util.stream.Collectors;
 
 /**
  * 帖子接口

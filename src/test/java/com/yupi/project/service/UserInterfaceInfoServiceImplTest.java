@@ -17,4 +17,6 @@ public class UserInterfaceInfoServiceImplTest {
         //测试用力的期望invokeCount方法返回true
         Assertions.assertTrue(b);
     }
+
+
 }
