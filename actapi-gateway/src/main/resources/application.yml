@@ -1,0 +1,22 @@
+
+server:
+  port: 8090
+spring:
+  cloud:
+    gateway:
+      default-filters:
+        # 添加响应头 响应头名称 source 响应头对应的值 acting
+        - AddResponseHeader=source, acting
+      routes:
+        # 定义了一个名为"api_route"的路由规则,该规则将匹配以"/api/"开头的路径,例如"/api/user",
+        # 并将这些请求转发到"http://localhost:8123"这个目标地址
+        - id: api_route
+          uri: http://localhost:8123
+          predicates:
+            - Path=/api/**
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          gateway: trace
