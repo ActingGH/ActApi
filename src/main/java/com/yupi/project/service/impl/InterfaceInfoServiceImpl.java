@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.yupi.project.common.ErrorCode;
 import com.yupi.project.exception.BusinessException;
 import com.yupi.project.model.entity.InterfaceInfo;
+import com.yupi.project.model.entity.UserInterfaceInfo;
 import com.yupi.project.service.InterfaceInfoService;
 import com.yupi.project.model.entity.InterfaceInfo;
 import com.yupi.project.mapper.InterfaceInfoMapper;
@@ -24,6 +25,7 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
 
     @Override
     public void validInterfaceInfo(InterfaceInfo interfaceInfo, boolean add) {
+        //TODO 校验
         String name = interfaceInfo.getName();
 //        Long id = interfaceInfo.getId();
 //        String description = interfaceInfo.getDescription();
@@ -49,6 +51,8 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
         }
 
     }
+
+
 
 }
 

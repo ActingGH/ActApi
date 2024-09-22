@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @MapperScan("com.yupi.project.mapper")
+
 public class MyApplication {
 
     public static void main(String[] args) {
